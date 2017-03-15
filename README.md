@@ -1,5 +1,8 @@
 # Apiary API - Golang library
 
+[![Build Status](https://travis-ci.org/m1ome/apiary.svg?branch=master)](https://travis-ci.org/m1ome/apiary)
+[![GoDoc](https://godoc.org/github.com/m1ome/apiary?status.svg)](https://godoc.org/github.com/m1ome/apiary)
+
 # Description
 This is a small golang library that will provide support for [Apiary](apiary.io) API.
 
