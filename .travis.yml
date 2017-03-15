@@ -1,14 +1,10 @@
 language: go
-
 go:
-  - 1.7
-  - 1.8
-
+- 1.7
+- 1.8
 before_install:
-  - go get github.com/mattn/goveralls
-
+- go get github.com/mattn/goveralls
 env:
-  - APIARY_TOKEN=6b68e8a36028a39dc87b6dccf8a477c4 APIARY_REPO=apiarygolang
-
+  secure: dBgGhIwl9pr3L4qhEpGnxQU06UMCgC2/Xz0nAdJwfz655tUUFlCfx6NCvK5PlhS/WN2LV0yvHH/lXm8eZ8YHfcC+/pdJsLJFaebHCoVlon2OsnWLlypCa8tvkhoVOPSzYl7LGLZq5RpvkZS9FgZCwAzQoOYyfoGdiTwqQCypUwzWCvhi8RFkixlS4G4pdE2MqmAfc8Xdy4ApyET01cjU5fPNQQbCCZxFxJnVE9Cr+P6+EUE9wbONpUGQsNG7J+3OQzQ1d0gtXwN8tjsO1SxNp64S3q9BYqJAjKuLs9/g+d9p2nk+su/2jBFgP/zEv5CUJvrNmuENUjpiZX/jiefv5lenD8qjNvy6UU1Rjz934efQWcM4kfxbKUXdIsu33zruaoxk/3qnGqOIAf2bWGu1ZYiX9kX9+C8/PESGB+nGKcG0gmtg34ZUSXRlbsKa/dSNsY68vHyNQvmAk5Gngwm1iUzzkxvhKzjGnvpYZvtfBor3qJiGmp5w7JqGVk+ymOTyEBT+kbi+yXGZNiUOhvofuGR0STr7/E+17MzrCarp6nW/0lrxJZCam5Lr8U0r7kqiIUrMrgxXMhYDF0kwoCKjd8Bzp/FFcAbHFiWHFdj4o4YtN04xUjQSF8NLfWJiG5t/yZSfpfC0uqtlKuXWgVhcg7JXSc06klphRUBQrPnvUM4=
 script:
-  - $HOME/gopath/bin/goveralls -service=travis-ci
+- "$HOME/gopath/bin/goveralls -service=travis-ci"
