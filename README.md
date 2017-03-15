@@ -42,3 +42,9 @@ func main() {
 }
 
 ```
+
+# Testing
+```
+go get gopkg.in/jarcoal/httpmock.v1
+go test -v ./...
+```

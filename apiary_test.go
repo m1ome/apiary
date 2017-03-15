@@ -1,11 +1,20 @@
 package apiary
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"testing"
+	"errors"
+	"strings"
+	"io"
 )
 
+//
+// Data
+//
 var Token = os.Getenv("APIARY_TOKEN")
 var Repository = os.Getenv("APIARY_REPO")
 var Team = os.Getenv("APIARY_TEAM")
@@ -16,6 +25,57 @@ HOST: http://api.example.com/
 # Example API\n\nIntroduction.
 # And update
 `)
+
+//
+// Helpers
+//
+type fakeReader struct {
+	io.Reader
+}
+
+func (r *fakeReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("OMG!")
+}
+
+//
+// Test suite
+//
+func Test_ReadResponse(t *testing.T) {
+	t.Run("Return empty response Error", func(t *testing.T) {
+		buf := bytes.NewBuffer([]byte(``))
+		rc := ioutil.NopCloser(buf)
+
+		response := &http.Response{
+			ContentLength: 10,
+			Body:          rc,
+		}
+		b, err := readResponse(response)
+
+		if len(b) != 0 {
+			t.Error("Something parsed from empty response")
+		}
+
+		if err.Error() != errors.New("Empty response").Error() {
+			t.Error("Empty response should throw: [Empty response] error")
+		}
+	})
+
+	t.Run("Bump error on Read from Buffer error", func(t *testing.T) {
+		buf := strings.NewReader("Non empty response")
+		reader := &fakeReader{buf}
+		rc := ioutil.NopCloser(reader)
+
+		response := &http.Response{
+			ContentLength: 10,
+			Body:          rc,
+		}
+		_, err := readResponse(response)
+
+		if err.Error() != errors.New("OMG!").Error() {
+			t.Error("Should throw: [OMG!] error")
+		}
+	})
+}
 
 func TestApiary_Me(t *testing.T) {
 	t.Run("Retrieve data", func(t *testing.T) {
@@ -63,7 +123,7 @@ func TestApiary_GetApis(t *testing.T) {
 
 		r, err := a.GetApis()
 
-		if len(r.Apis) == 0 {
+		if r == nil || len(r.Apis) == 0 {
 			t.Error("Empty apis returned")
 		}
 
