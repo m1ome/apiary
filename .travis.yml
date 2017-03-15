@@ -7,5 +7,9 @@ go:
 before_install:
   - go get github.com/mattn/goveralls
 
+env:
+  - APIARY_TOKEN=6b68e8a36028a39dc87b6dccf8a477c4
+  - APIARY_REPO=apiarygolang
+
 script:
   - $HOME/gopath/bin/goveralls -service=travis-ci
