@@ -51,7 +51,7 @@ type ApiaryFetchResponse struct {
 	Code    string `json:"code"`
 }
 
-type apiary struct {
+type Apiary struct {
 	options ApiaryOptions
 	client  *http.Client
 }
@@ -60,9 +60,9 @@ type ApiaryOptions struct {
 	Token string
 }
 
-// NewApiary create new apiary.io client
-func NewApiary(opts ApiaryOptions) *apiary {
-	return &apiary{
+// NewApiary create new Apiary.io client
+func NewApiary(opts ApiaryOptions) *Apiary {
+	return &Apiary{
 		options: opts,
 		client:  &http.Client{},
 	}
@@ -71,7 +71,7 @@ func NewApiary(opts ApiaryOptions) *apiary {
 // Me retrieve user information
 //
 // Reference: http://docs.apiary.apiary.io/#reference/user-information/me/get-me
-func (a *apiary) Me() (me ApiaryMeResponse, err error) {
+func (a *Apiary) Me() (me ApiaryMeResponse, err error) {
 	data, response, err := a.sendRequest(apiaryActionMe)
 	if err != nil {
 		return
@@ -93,7 +93,7 @@ func (a *apiary) Me() (me ApiaryMeResponse, err error) {
 // GetApis return list of user blueprints/APIs
 //
 // Reference: http://docs.apiary.apiary.io/#reference/api-list/user-api-list/get-me
-func (a *apiary) GetApis() (apis *ApiaryApisResponse, err error) {
+func (a *Apiary) GetApis() (apis *ApiaryApisResponse, err error) {
 	data, response, err := a.sendRequest(apiaryActionGetApis)
 	if err != nil {
 		return
@@ -115,7 +115,7 @@ func (a *apiary) GetApis() (apis *ApiaryApisResponse, err error) {
 // GetTeamApis return list of team blueprints/APIs
 //
 // Reference: http://docs.apiary.apiary.io/#reference/api-list/team-api-list/get-me
-func (a *apiary) GetTeamApis(team string) (apis *ApiaryApisResponse, err error) {
+func (a *Apiary) GetTeamApis(team string) (apis *ApiaryApisResponse, err error) {
 	uri := fmt.Sprintf(apiaryActionGetTeamApis, team)
 	data, response, err := a.sendRequest(uri)
 	if err != nil {
@@ -135,10 +135,10 @@ func (a *apiary) GetTeamApis(team string) (apis *ApiaryApisResponse, err error) 
 	return
 }
 
-// PublishBlueprint publish blueprint in apiary.io
+// PublishBlueprint publish blueprint in Apiary.io
 //
 // Reference: http://docs.apiary.apiary.io/#reference/blueprint/publish-blueprint/get-me
-func (a *apiary) PublishBlueprint(name string, content []byte) (published bool, err error) {
+func (a *Apiary) PublishBlueprint(name string, content []byte) (published bool, err error) {
 	jsonData, err := json.Marshal(map[string]string{
 		"code": string(content),
 	})
@@ -175,10 +175,10 @@ func (a *apiary) PublishBlueprint(name string, content []byte) (published bool, 
 	return
 }
 
-// FetchBlueprint fetches blueprint from apiary.io
+// FetchBlueprint fetches blueprint from Apiary.io
 //
 // Reference: Unknown
-func (a *apiary) FetchBlueprint(name string) (blueprint *ApiaryFetchResponse, err error) {
+func (a *Apiary) FetchBlueprint(name string) (blueprint *ApiaryFetchResponse, err error) {
 	uri := fmt.Sprintf(apiaryActionFetchBlueprint, name)
 	data, response, err := a.sendLegacyRequest(uri)
 	if err != nil {

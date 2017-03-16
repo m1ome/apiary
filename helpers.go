@@ -1,11 +1,11 @@
 package apiary
 
 import (
+	"net/http"
+	"io"
+	"fmt"
 	"bytes"
 	"errors"
-	"fmt"
-	"io"
-	"net/http"
 )
 
 func checkOk(response *http.Response) error {
@@ -46,7 +46,7 @@ func bearerTokenLegacy(token string) string {
 	return buf.String()
 }
 
-func (a *apiary) request(method string, path string, headers map[string]string, body io.Reader) (response []byte, res *http.Response, err error) {
+func (a *Apiary) request(method string, path string, headers map[string]string, body io.Reader) (response []byte, res *http.Response, err error) {
 	url := ApiaryAPIURL + path
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
@@ -66,21 +66,21 @@ func (a *apiary) request(method string, path string, headers map[string]string, 
 	return
 }
 
-func (a *apiary) sendRequest(path string) (data []byte, response *http.Response, err error) {
+func (a *Apiary) sendRequest(path string) (data []byte, response *http.Response, err error) {
 	headers := make(map[string]string)
 	headers["Authorization"] = bearerToken(a.options.Token)
 	data, response, err = a.request("GET", path, headers, nil)
 	return
 }
 
-func (a *apiary) sendLegacyRequest(path string) (data []byte, response *http.Response, err error) {
+func (a *Apiary) sendLegacyRequest(path string) (data []byte, response *http.Response, err error) {
 	headers := make(map[string]string)
 	headers["Authentication"] = bearerTokenLegacy(a.options.Token)
 	data, response, err = a.request("GET", path, headers, nil)
 	return
 }
 
-func (a *apiary) sendLegacyPostRequest(path string, body io.Reader) (data []byte, response *http.Response, err error) {
+func (a *Apiary) sendLegacyPostRequest(path string, body io.Reader) (data []byte, response *http.Response, err error) {
 	headers := make(map[string]string)
 	headers["Authentication"] = bearerTokenLegacy(a.options.Token)
 	headers["Content-Type"] = "application/json; charset=utf-8"
