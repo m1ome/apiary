@@ -294,6 +294,24 @@ func TestApiary_FetchBlueprint(t *testing.T) {
 			t.Errorf("Error: %s", err.Error())
 		}
 	})
+
+	t.Run("Return error on wrong code", func(t *testing.T) {
+		httpmock.Activate()
+		defer httpmock.DeactivateAndReset()
+
+		responder := httpmock.NewStringResponder(404, "{}")
+		httpmock.RegisterNoResponder(responder)
+
+		a := NewApiary(ApiaryOptions{
+			Token: Token,
+		})
+
+		_, err := a.FetchBlueprint(Repository)
+
+		if err == nil {
+			t.Error("Should return Error on wrong response Code")
+		}
+	})
 }
 
 func TestApiary_PublishBlueprint(t *testing.T) {
