@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -14,11 +13,11 @@ const (
 )
 
 const (
-	ApiaryActionMe               = "me"
-	ApiaryActionGetApis          = "me/apis"
-	ApiaryActionGetTeamApis      = "me/teams/%s/apis"
-	ApiaryActionFetchBlueprint   = "blueprint/get/%s"
-	ApiaryActionPublishBlueprint = "blueprint/publish/%s"
+	apiaryActionMe               = "me"
+	apiaryActionGetApis          = "me/apis"
+	apiaryActionGetTeamApis      = "me/teams/%s/apis"
+	apiaryActionFetchBlueprint   = "blueprint/get/%s"
+	apiaryActionPublishBlueprint = "blueprint/publish/%s"
 )
 
 type ApiaryMeResponse struct {
@@ -52,7 +51,7 @@ type ApiaryFetchResponse struct {
 	Code    string `json:"code"`
 }
 
-type Apiary struct {
+type apiary struct {
 	options ApiaryOptions
 	client  *http.Client
 }
@@ -61,97 +60,19 @@ type ApiaryOptions struct {
 	Token string
 }
 
-func NewApiary(opts ApiaryOptions) *Apiary {
-	return &Apiary{
+// NewApiary create new apiary.io client
+func NewApiary(opts ApiaryOptions) *apiary {
+	return &apiary{
 		options: opts,
 		client:  &http.Client{},
 	}
 }
 
-func checkOk(response *http.Response) error {
-	if response.StatusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("Bad response code: %s", response.Status))
-	}
-
-	return nil
-}
-
-func readResponse(response *http.Response) ([]byte, error) {
-	buf := bytes.NewBuffer(make([]byte, 0, response.ContentLength))
-	n, err := buf.ReadFrom(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if n == 0 {
-		return nil, errors.New("Empty response")
-	}
-
-	return buf.Bytes(), nil
-}
-
-func bearerToken(token string) string {
-	buf := bytes.NewBuffer(make([]byte, 0, len(token)+7))
-	buf.Write([]byte(`bearer `))
-	buf.Write([]byte(token))
-
-	return buf.String()
-}
-func bearerTokenLegacy(token string) string {
-	buf := bytes.NewBuffer(make([]byte, 0, len(token)+6))
-	buf.Write([]byte(`Token `))
-	buf.Write([]byte(token))
-
-	return buf.String()
-}
-
-func (a *Apiary) request(method string, path string, headers map[string]string, body io.Reader) (response []byte, res *http.Response, err error) {
-	url := ApiaryAPIURL + path
-	req, err := http.NewRequest(method, url, body)
-	if err != nil {
-		return
-	}
-
-	for k, v := range headers {
-		req.Header.Add(k, v)
-	}
-
-	res, err = a.client.Do(req)
-	if err != nil {
-		return
-	}
-
-	response, err = readResponse(res)
-	return
-}
-
-func (a *Apiary) sendRequest(path string) (data []byte, response *http.Response, err error) {
-	headers := make(map[string]string)
-	headers["Authorization"] = bearerToken(a.options.Token)
-	data, response, err = a.request("GET", path, headers, nil)
-	return
-}
-
-func (a *Apiary) sendLegacyRequest(path string) (data []byte, response *http.Response, err error) {
-	headers := make(map[string]string)
-	headers["Authentication"] = bearerTokenLegacy(a.options.Token)
-	data, response, err = a.request("GET", path, headers, nil)
-	return
-}
-
-func (a *Apiary) sendLegacyPostRequest(path string, body io.Reader) (data []byte, response *http.Response, err error) {
-	headers := make(map[string]string)
-	headers["Authentication"] = bearerTokenLegacy(a.options.Token)
-	headers["Content-Type"] = "application/json; charset=utf-8"
-	data, response, err = a.request("POST", path, headers, body)
-	return
-}
-
-
 // Me retrieve user information
+//
 // Reference: http://docs.apiary.apiary.io/#reference/user-information/me/get-me
-func (a *Apiary) Me() (me ApiaryMeResponse, err error) {
-	data, response, err := a.sendRequest(ApiaryActionMe)
+func (a *apiary) Me() (me ApiaryMeResponse, err error) {
+	data, response, err := a.sendRequest(apiaryActionMe)
 	if err != nil {
 		return
 	}
@@ -170,9 +91,10 @@ func (a *Apiary) Me() (me ApiaryMeResponse, err error) {
 }
 
 // GetApis return list of user blueprints/APIs
+//
 // Reference: http://docs.apiary.apiary.io/#reference/api-list/user-api-list/get-me
-func (a *Apiary) GetApis() (apis *ApiaryApisResponse, err error) {
-	data, response, err := a.sendRequest(ApiaryActionGetApis)
+func (a *apiary) GetApis() (apis *ApiaryApisResponse, err error) {
+	data, response, err := a.sendRequest(apiaryActionGetApis)
 	if err != nil {
 		return
 	}
@@ -191,9 +113,10 @@ func (a *Apiary) GetApis() (apis *ApiaryApisResponse, err error) {
 }
 
 // GetTeamApis return list of team blueprints/APIs
+//
 // Reference: http://docs.apiary.apiary.io/#reference/api-list/team-api-list/get-me
-func (a *Apiary) GetTeamApis(team string) (apis *ApiaryApisResponse, err error) {
-	uri := fmt.Sprintf(ApiaryActionGetTeamApis, team)
+func (a *apiary) GetTeamApis(team string) (apis *ApiaryApisResponse, err error) {
+	uri := fmt.Sprintf(apiaryActionGetTeamApis, team)
 	data, response, err := a.sendRequest(uri)
 	if err != nil {
 		return
@@ -213,8 +136,9 @@ func (a *Apiary) GetTeamApis(team string) (apis *ApiaryApisResponse, err error) 
 }
 
 // PublishBlueprint publish blueprint in apiary.io
+//
 // Reference: http://docs.apiary.apiary.io/#reference/blueprint/publish-blueprint/get-me
-func (a *Apiary) PublishBlueprint(name string, content []byte) (published bool, err error) {
+func (a *apiary) PublishBlueprint(name string, content []byte) (published bool, err error) {
 	jsonData, err := json.Marshal(map[string]string{
 		"code": string(content),
 	})
@@ -223,7 +147,7 @@ func (a *Apiary) PublishBlueprint(name string, content []byte) (published bool, 
 		return
 	}
 
-	uri := fmt.Sprintf(ApiaryActionPublishBlueprint, name)
+	uri := fmt.Sprintf(apiaryActionPublishBlueprint, name)
 	data, response, err := a.sendLegacyPostRequest(uri, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return
@@ -252,9 +176,10 @@ func (a *Apiary) PublishBlueprint(name string, content []byte) (published bool, 
 }
 
 // FetchBlueprint fetches blueprint from apiary.io
+//
 // Reference: Unknown
-func (a *Apiary) FetchBlueprint(name string) (blueprint *ApiaryFetchResponse, err error) {
-	uri := fmt.Sprintf(ApiaryActionFetchBlueprint, name)
+func (a *apiary) FetchBlueprint(name string) (blueprint *ApiaryFetchResponse, err error) {
+	uri := fmt.Sprintf(apiaryActionFetchBlueprint, name)
 	data, response, err := a.sendLegacyRequest(uri)
 	if err != nil {
 		return
