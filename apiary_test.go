@@ -1,9 +1,12 @@
 package apiary
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"testing"
+
+	"gopkg.in/jarcoal/httpmock.v1"
 )
 
 //
@@ -19,6 +22,117 @@ HOST: http://api.example.com/
 # Example API\n\nIntroduction.
 # And update
 `)
+
+//
+// Errors testing
+//
+
+// Testing errors
+func Test_Errors(t *testing.T) {
+	t.Run("Return Error on request error", func(t *testing.T) {
+		httpmock.Activate()
+		defer httpmock.DeactivateAndReset()
+
+		responder := httpmock.NewErrorResponder(errors.New("Error"))
+		httpmock.RegisterNoResponder(responder)
+
+		a := NewApiary(ApiaryOptions{
+			Token: Token,
+		})
+
+		t.Run("Me()", func(t *testing.T) {
+			_, err := a.Me()
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("GetApis()", func(t *testing.T) {
+			_, err := a.GetApis()
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("GetTeamApis()", func(t *testing.T) {
+			_, err := a.GetTeamApis(Team)
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("PublishBlueprint()", func(t *testing.T) {
+			_, err := a.PublishBlueprint(Repository, []byte(`{}`))
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("FetchBlueprint()", func(t *testing.T) {
+			_, err := a.FetchBlueprint(Repository)
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+	})
+
+	t.Run("Return Error on invalid JSON", func(t *testing.T) {
+		httpmock.Activate()
+		defer httpmock.DeactivateAndReset()
+
+		responder := httpmock.NewStringResponder(200, "{I_AM_INVALID_JSON}")
+		httpmock.RegisterNoResponder(responder)
+
+		a := NewApiary(ApiaryOptions{
+			Token: Token,
+		})
+
+		t.Run("Me()", func(t *testing.T) {
+			_, err := a.Me()
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("GetApis()", func(t *testing.T) {
+			_, err := a.GetApis()
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("GetTeamApis()", func(t *testing.T) {
+			_, err := a.GetTeamApis(Team)
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("PublishBlueprint()", func(t *testing.T) {
+			_, err := a.PublishBlueprint(Repository, []byte(`{}`))
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+
+		t.Run("FetchBlueprint()", func(t *testing.T) {
+			_, err := a.FetchBlueprint(Repository)
+
+			if err == nil {
+				t.Error("Should return Error")
+			}
+		})
+	})
+}
 
 //
 // Exported functions testing

@@ -87,9 +87,4 @@ func Test_Request(t *testing.T) {
 			t.Error("Bad client.Do should return error")
 		}
 	})
-
-	//httpmock.Activate()
-	//defer httpmock.DeactivateAndReset()
-
-	//httpmock.RegisterResponder("UNKN", )
 }
