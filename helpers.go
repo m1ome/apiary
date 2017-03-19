@@ -10,7 +10,7 @@ import (
 
 func checkOk(response *http.Response) error {
 	if response.StatusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("Bad response code: %s", response.Status))
+		return fmt.Errorf("Bad response code: %s", response.Status)
 	}
 
 	return nil

@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/m1ome/apiary.svg?branch=master)](https://travis-ci.org/m1ome/apiary)
 [![GoDoc](https://godoc.org/github.com/m1ome/apiary?status.svg)](https://godoc.org/github.com/m1ome/apiary)
 [![Coverage Status](https://coveralls.io/repos/github/m1ome/apiary/badge.svg?branch=master)](https://coveralls.io/github/m1ome/apiary?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/m1ome/apiary)](https://goreportcard.com/report/github.com/m1ome/apiary)
 
 # Description
 This is a small golang library that will provide support for [Apiary](apiary.io) API.

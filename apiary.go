@@ -3,7 +3,6 @@ package apiary
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -222,7 +221,7 @@ func (a *Apiary) PublishBlueprint(name string, content []byte) (published bool, 
 		}
 
 		if apiaryError.Error {
-			err = errors.New(fmt.Sprintf("Creation failed: %s", apiaryError.Message))
+			err = fmt.Errorf("Creation failed: %s", apiaryError.Message)
 			return
 		}
 	}
