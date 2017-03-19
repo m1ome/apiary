@@ -19,7 +19,7 @@ const (
 	apiaryActionPublishBlueprint = "blueprint/publish/%s"
 )
 
-// ApiaryMeResponse
+// ApiaryMeResponse is a struct of answer to Me() call
 //
 // Description:
 // ID - user id
@@ -40,12 +40,12 @@ type ApiaryMeResponse struct {
 	}
 }
 
-// ApiaryApisResponse
+// ApiaryApisResponse is a struct of answer to GetApis() all
 type ApiaryApisResponse struct {
 	Apis []ApiaryApiResponse `json:"apis"`
 }
 
-// ApiaryApiResponse
+// ApiaryApiResponse is a helper struct of API response: GetApis(), GetTeamApis()
 //
 // Description:
 // Name - API name
@@ -65,7 +65,7 @@ type ApiaryApiResponse struct {
 	Personal         bool   `json:"apiIsPersonal"`
 }
 
-// ApiaryFetchResponse
+// ApiaryFetchResponse is a struct of Fetch response
 //
 // Description:
 // Error - is fetch return error
