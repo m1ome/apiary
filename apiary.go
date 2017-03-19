@@ -8,9 +8,8 @@ import (
 	"net/http"
 )
 
-const (
-	ApiaryAPIURL = "https://api.apiary.io/"
-)
+// ApiaryAPIURL URL of public apiary.io API
+const ApiaryAPIURL = "https://api.apiary.io/"
 
 const (
 	apiaryActionMe               = "me"
@@ -20,6 +19,16 @@ const (
 	apiaryActionPublishBlueprint = "blueprint/publish/%s"
 )
 
+// ApiaryMeResponse
+//
+// Description:
+// ID - user id
+// Name - user name
+// URL - user API URL
+// Teams - slice of
+// * ID - team id
+// * Name - team name
+// * URL - team api url
 type ApiaryMeResponse struct {
 	ID    string `json:"userId"`
 	Name  string `json:"userName"`
@@ -31,10 +40,21 @@ type ApiaryMeResponse struct {
 	}
 }
 
+// ApiaryApisResponse
 type ApiaryApisResponse struct {
 	Apis []ApiaryApiResponse `json:"apis"`
 }
 
+// ApiaryApiResponse
+//
+// Description:
+// Name - API name
+// DocumentationURL - URL of docs hosten on apiary.io
+// Subdomain - short subdomain (3 level domain)
+// Private - is this doc private
+// Public - is this doc public
+// Team - is this doc belongs to team
+// Personal - this this doc personal
 type ApiaryApiResponse struct {
 	Name             string `json:"apiName"`
 	DocumentationURL string `json:"apiDocumentationUrl"`
@@ -45,17 +65,54 @@ type ApiaryApiResponse struct {
 	Personal         bool   `json:"apiIsPersonal"`
 }
 
+// ApiaryFetchResponse
+//
+// Description:
+// Error - is fetch return error
+// Message - error message (when error -> false this would be "")
+// Code - error code (when error -> false this would be "")
 type ApiaryFetchResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
 	Code    string `json:"code"`
 }
 
+// Apiary basic API client
+//
+// Usage:
+//package main
+//
+//import (
+//"fmt"
+//"log"
+//"os"
+//
+//"github.com/m1ome/apiary"
+//)
+//
+//func main() {
+//	token := os.Getenv("APIARY_TOKEN")
+//
+//	api := NewApiary(ApiaryOptions{
+//		Token: Token,
+//	})
+//
+//	response, err := api.Me()
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	fmt.Printf("ID: %d\n", response.ID)
+//	fmt.Printf("Name: %s\n", response.Name)
+//	fmt.Printf("URL: %s\n", response.URL)
+//}
 type Apiary struct {
 	options ApiaryOptions
 	client  *http.Client
 }
 
+// ApiaryOptions structure of possible API options
+// Token - Your apiary.io token's to access API.
 type ApiaryOptions struct {
 	Token string
 }

@@ -40,7 +40,6 @@ func main() {
     fmt.Printf("Name: %s\n", response.Name)
     fmt.Printf("URL: %s\n", response.URL)
 }
-
 ```
 
 # Testing

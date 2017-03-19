@@ -17,11 +17,27 @@ var Repository = os.Getenv("APIARY_REPO")
 var Team = os.Getenv("APIARY_TEAM")
 
 var ValidBlueprint = []byte(`FORMAT: 1A
-HOST: http://api.example.com/
+# Hello, world
 
-# Example API\n\nIntroduction.
-# And update
-`)
+## Accounts [/accounts]
+
+### List [GET]
+
++ Response 200 (text/plain)
+
+        Hello, world!
+
++ Response 200 (application/json)
+
+        {"message": "Hello, world!"}
+
+### Delete [GET /accounts/{id}]
++ Parameters
+    + id (number, required) - Account ID
+
++ Response 200 (text/plain)
+
+        OK`)
 
 //
 // Errors testing

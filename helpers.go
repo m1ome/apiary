@@ -1,11 +1,11 @@
 package apiary
 
 import (
-	"net/http"
-	"io"
-	"fmt"
 	"bytes"
 	"errors"
+	"fmt"
+	"io"
+	"net/http"
 )
 
 func checkOk(response *http.Response) error {
