@@ -66,7 +66,7 @@ func Test_ReadResponse(t *testing.T) {
 func Test_Request(t *testing.T) {
 	t.Run("Return error on .NewRequest error", func(t *testing.T) {
 		a := NewApiary(ApiaryOptions{})
-		_, _, err := a.request(";;;", "", map[string]string{}, nil)
+		_, _, err := a.(*Apiary).request(";;;", "", map[string]string{}, nil)
 
 		if err == nil {
 			t.Error("Bad method should return error")
@@ -81,7 +81,7 @@ func Test_Request(t *testing.T) {
 		httpmock.RegisterResponder("GET", ApiaryAPIURL, responder)
 
 		a := NewApiary(ApiaryOptions{})
-		_, _, err := a.request("GET", "", map[string]string{}, nil)
+		_, _, err := a.(*Apiary).request("GET", "", map[string]string{}, nil)
 
 		if err == nil {
 			t.Error("Bad client.Do should return error")

@@ -76,6 +76,15 @@ type ApiaryFetchResponse struct {
 	Code    string `json:"code"`
 }
 
+// ApiaryInterface this interface is primary need for testing purposes
+type ApiaryInterface interface {
+	Me() (me ApiaryMeResponse, err error)
+	GetApis() (apis *ApiaryApisResponse, err error)
+	GetTeamApis(team string) (apis *ApiaryApisResponse, err error)
+	PublishBlueprint(name string, content []byte) (published bool, err error)
+	FetchBlueprint(name string) (blueprint *ApiaryFetchResponse, err error)
+}
+
 // Apiary basic API client
 //
 // Usage:
@@ -117,7 +126,7 @@ type ApiaryOptions struct {
 }
 
 // NewApiary create new Apiary.io client
-func NewApiary(opts ApiaryOptions) *Apiary {
+func NewApiary(opts ApiaryOptions) ApiaryInterface {
 	return &Apiary{
 		options: opts,
 		client:  &http.Client{},
